@@ -2,4 +2,4 @@
 
 Michael Ellerkamp<br>
 
-mgellerkamp044@my.mwsu.edu 
+mgellerkamp044@my.mwsu.edu
