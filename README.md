@@ -1,4 +1,4 @@
-<img src=http://imgur.com/mtCwnQ3" width="400">
+<img src="http://imgur.com/mtCwnQ3" width="400">
 
 Michael Ellerkamp<br>
 
