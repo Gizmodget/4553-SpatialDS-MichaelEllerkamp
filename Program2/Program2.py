@@ -2,7 +2,11 @@
 """
 Created on Mon Sep 21 19:06:46 2015
 
-@author: Michael
+@author: Michael Ellerkamp
+Spatial Datastructures
+Dr. Griffin
+Program2: edit the kd tree program of Dr. Griffin in order to make it
+utilize graphviz and have the program call graphviz.
 """
 import sys
 sys.path.append('/usr/local/lib/python3.4/site-packages/')
@@ -20,18 +24,14 @@ class Graph():
     def AddEdges(self, Edges):
             print Edges
             self.EdgeList.append(Edges)
-    def Print(self):
+    def Print(self, g2):
         #g1.node('A',{'label': 'Node A'}) example to mirror
-        f = open('kdtree-out.svg', 'w')
-        f.write("'''python\nimport graphviz as gv\n")
-        f.write("g1 = gv.Digraph(format='svg')\n")
+        '''python'''
         for Node in self.NodeList:
-            f.write("g1.node('" + str(Node[0]) + "',")
-            f.write("{'label': '" + str(Node) + "'})\n")
+            g2.node("'" + str(Node[0]) + "',{'label': '" + str(Node) + "'}")
         for Edge in self.EdgeList:
-            f.write("g1.edge('" + str(Edge) + "')\n")
-        f.write("'''")
-        f.close()
+            g2.edge("'" + str(Edge[0]) + "'","'" +str(Edge[1]) + "'")
+
 """
 @class node - simple kdtree node
 @method - __init__: Sets value,children,discriminator
@@ -238,6 +238,7 @@ class kdtree:
 
 
 if __name__ == '__main__':
+    g1 = gv.Digraph(comment='Michael Ellerkamp')
     y = Graph()
     tree = kdtree(3)
     tree.insert([3,1,4])
@@ -252,5 +253,7 @@ if __name__ == '__main__':
     tree.insert([4,0,6])
     tree.insert([7,1,6])
     tree.TraversalViz(y)
-    y.Print()
-#    gv.render('kdtree-out.svg')
+    y.Print(g1)
+    g1.render('kdtree-out.svg', view=True)
+
+
