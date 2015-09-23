@@ -23,15 +23,14 @@ class Graph():
     def Print(self):
         #g1.node('A',{'label': 'Node A'}) example to mirror
         f = open('kdtree-out.svg', 'w')
-        f.write("python\nimport graphviz as gv\n")
+        f.write("'''python\nimport graphviz as gv\n")
         f.write("g1 = gv.Digraph(format='svg')\n")
         for Node in self.NodeList:
-            f.write("g1.node('" + str(Node) + "',")
-            f.write("{'label': '" + str(Node)+ "'})\n")
+            f.write("g1.node('" + str(Node[0]) + "',")
+            f.write("{'label': '" + str(Node) + "'})\n")
         for Edge in self.EdgeList:
-            f.write("g1.edge('" + str(Edge) + "',")
-            f.write("{'label': '" + str(Edge) + "'})\n")
-#        f.write("'''")
+            f.write("g1.edge('" + str(Edge) + "')\n")
+        f.write("'''")
         f.close()
 """
 @class node - simple kdtree node
@@ -194,7 +193,8 @@ class kdtree:
         if root == None:
             return
         else:
-            Graphviz.AddNodes(root.getVals())                
+            x = (root.getVals(), root.getDiscValue())
+            Graphviz.AddNodes(x)                
             if(root.leftChild):
                 x = (root.getVals(), root.leftChild.getVals())
                 Graphviz.AddEdges(x)
@@ -253,4 +253,4 @@ if __name__ == '__main__':
     tree.insert([7,1,6])
     tree.TraversalViz(y)
     y.Print()
-
+#    gv.render('kdtree-out.svg')
