@@ -273,7 +273,7 @@ class Polygon:
             self.points.append(Point(x,y))
 
         self.mbr = Rect(Point(self.minX,self.minY),Point(self.maxX,self.maxY))
-        print self.mbr
+
     def get_points(self):
         generic = []
         for p in self.points:
@@ -284,55 +284,66 @@ class Polygon:
 
         self.direction = direction
     def update_position(self, canvas):
-        if self.x <= 0:
-            if self.direction == "SW":
-                self.direction = "SE"
-            if self.direction == "W":
-                self.direction = "E"
-            if self.direction == "NW":
-                self.direction = "NE"
-        if self.x >= canvas.width:
-            if self.direction == "SE":
-                self.direction = "SW"
-            if self.direction == "E":
-                self.direction = "W"
-            if self.direction == "NE":
-                self.direction = "NW"
-        if self.y <= 0:
-            if self.direction == "NW":
-                self.direction = "SW"
+        pts = []
+        for P in self.get_points():
+            if P[0] <= 0:
+                if self.direction == "SW":
+                    self.direction = "SE"
+                if self.direction == "W":
+                    self.direction = "E"
+                if self.direction == "NW":
+                    self.direction = "NE"
+            if P[0] >= canvas.width:
+                if self.direction == "SE":
+                    self.direction = "SW"
+                if self.direction == "E":
+                    self.direction = "W"
+                if self.direction == "NE":
+                    self.direction = "NW"
+            if P[1] <= 0:
+                if self.direction == "NW":
+                    self.direction = "SW"
+                if self.direction == "N":
+                    self.direction = "S"
+                if self.direction == "NE":
+                    self.direction = "SE"
+            if P[1] >= canvas.height:
+                if self.direction == "SW":
+                    self.direction = "NW"
+                if self.direction == "S":
+                    self.direction = "N"
+                if self.direction == "SE":
+                    self.direction = "NE"
+        for P in self.get_points():
             if self.direction == "N":
-                self.direction = "S"
+                pts.append((P[0],P[1]-1))                
+#                P.y -= 1
             if self.direction == "NE":
-                self.direction = "SE"
-        if self.y >= canvas.height:
-            if self.direction == "SW":
-                self.direction = "NW"
-            if self.direction == "S":
-                self.direction = "N"
+                pts.append((P[0]+1,P[1]-1))
+#                P.y -= 1
+#                P.x += 1
+            if self.direction == "E":
+                pts.append((P[0]+1,P[1]))
+#                P.x += 1
             if self.direction == "SE":
-                self.direction = "NE"
-        if self.direction == "N":
-            self.y -= 1
-        if self.direction == "NE":
-            self.y -= 1
-            self.x += 1
-        if self.direction == "E":
-            self.x += 1
-        if self.direction == "SE":
-            self.x += 1
-            self.y += 1
-        if self.direction == "S":
-            self.y += 1
-        if self.direction == "SW":
-            self.x -= 1
-            self.y += 1
-        if self.direction == "W":
-            self.x -= 1
-        if self.direction == "NW":
-            self.y -= 1
-            self.x -= 1        
-
+                pts.append((P[0]+1,P[1]+1))
+#                P.x += 1
+#                P.y += 1
+            if self.direction == "S":
+                pts.append((P[0],P[1]+1))
+#                P.y += 1
+            if self.direction == "SW":
+                pts.append((P[0]-1,P[1]+1))
+#                P.x -= 1
+#                P.y += 1
+            if self.direction == "W":
+                pts.append((P[0]-1,P[1]))
+#                P.x -= 1
+            if self.direction == "NW":
+                pts.append((P[0]-1,P[1]-1))
+#                P.y -= 1
+#                P.x -= 1        
+        self.set_points(pts)
     # determine if a point is inside a given polygon or not
     # Polygon is a list of (x,y) pairs.
     def point_inside_polygon(self, p):
@@ -364,31 +375,44 @@ class Polygon:
 class Driver(pantograph.PantographHandler):
 
     def setup(self):
-        self.poly2 = Polygon([(83, 163),  (90, 74),  (145, 60),  (201, 69),  (265, 46),  (333, 61),  (352, 99),  (370, 129),  (474, 138),  (474, 178),  (396, 225),  (351, 275),  (376, 312),  (382, 356),  (338, 368),  (287, 302),  (224, 304),  (128, 338),  (110, 316),  (129, 270),  (83, 231),  (103, 201),  (126, 162),  (65, 51)])
-        self.poly1 = Polygon([(405, 328),(377, 367),(444, 413),(504, 384),(519, 307),(453, 248),(380, 250),(365, 278),(374, 325)])
+        self.poly2 = Polygon([(145, 60),  (201, 69),  (265, 46),  (333, 61),  (352, 99),  (370, 129),  (474, 138),  (474, 178),  (396, 225),  (351, 275),  (376, 312),  (382, 356),  (338, 368),  (287, 302),  (224, 304),  (128, 338),  (110, 316),  (129, 270),  (83, 231),  (65, 51), (83, 163),  (103, 201),  (90, 74), (126, 162)])
+        self.poly2.set_direction("E")
+        self.poly1 = Polygon([(905, 328),(877, 367),(944, 413),(1004, 384),(1019, 307),(953, 248),(880, 250),(865, 278),(883, 325)])
+        self.poly1.set_direction("SW")
+        self.poly3 = Polygon([(900, 600), (950,650), (1000, 500)])
+        self.poly3.set_direction("N")
         self.p1 = Point(485, 138)
         self.p1.set_direction("SE")
         self.p2 = Point(self.width/2, self.height/2)
         self.p2.set_direction("NW")
-        self.p3 = Point(450,135)
+        self.p3 = Point(86,163)
         self.p3.set_direction("SE")
+        self.polys = [self.poly1, self.poly2, self.poly3]
         self.points = [self.p1, self.p2, self.p3]
     def drawShapes(self):
+        self.draw_polygon(self.poly3.get_points() , color = "#000")
         self.draw_polygon(self.poly2.get_points() , color = "#000")
         self.draw_polygon(self.poly1.get_points() , color = "#000")
         self.draw_rect(0, 0, self.width, self.height, color= "#000")
 
-        if  self.poly2.point_inside_polygon(self.p1):
+        if  (self.poly2.point_inside_polygon(self.p1) or self.poly1.point_inside_polygon(self.p1)
+         or self.poly3.point_inside_polygon(self.p1)):
             color = "#0F0"
         else:
             color = "#F00"
         self.fill_oval(self.p1.x, self.p1.y, 7, 7, color)
 
-        if  self.poly2.point_inside_polygon(self.p2):
+        if  (self.poly2.point_inside_polygon(self.p2) or self.poly1.point_inside_polygon(self.p2)
+        or self.poly3.point_inside_polygon(self.p2)):
             color = "#0F0"
         else:
             color = "#F00"
         self.fill_oval(self.p2.x, self.p2.y, 7, 7, color)
+        if  (self.poly2.point_inside_polygon(self.p3) or self.poly1.point_inside_polygon(self.p3)
+        or self.poly3.point_inside_polygon(self.p3)):
+            color = "#0F0"
+        else:
+            color = "#F00"
         self.fill_oval(self.p3.x, self.p3.y, 7, 7, color)
     def changeDirection():
         pass
@@ -401,12 +425,19 @@ class Driver(pantograph.PantographHandler):
         self.p1.update_position(self)
         self.p2.update_position(self)
         self.p3.update_position(self)
+        self.poly1.update_position(self)
+        self.poly2.update_position(self)
+        self.poly3.update_position(self)
         for (a, b) in itertools.combinations(self.points, 2):
             if a.distance_to(b) < 14:
                 directtmp = a.direction
                 a.direction = b.direction
                 b.direction = directtmp
-
+        for (a, b) in itertools.combinations(self.polys, 2):
+            if a.mbr.overlaps(b.mbr):
+                directtmp = a.direction
+                a.direction = b.direction
+                b.direction = directtmp
         self.drawShapes()
 
 
