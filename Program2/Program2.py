@@ -13,7 +13,7 @@ sys.path.append('/usr/local/lib/python3.4/site-packages/')
 import math
 import graphviz as gv
 import functools
-
+import time
 
 class Graph():
     def __init__(self):
@@ -28,7 +28,7 @@ class Graph():
         #g1.node('A',{'label': 'Node A'}) example to mirror
         '''python'''
         for Node in self.NodeList:
-            g2.node("'" + str(Node[0]) + "',{'label': '" + str(Node) + "'}")
+            g2.node("'" + str(Node[0]) + "'" , "'" + str(Node) + "'")
         for Edge in self.EdgeList:
             g2.edge("'" + str(Edge[0]) + "'","'" +str(Edge[1]) + "'")
 
@@ -107,7 +107,7 @@ class node:
         pString += "\n"
         pString += "leftChild: " + leftVals+ "\n"
         pString += "rightChild: "  + rightVals + "\n"
-        pString += "disc: "  + str(self.disc)
+        pString += "disc: "  + str(self.disc)   
         print(pString)
 
 class kdtree:
@@ -238,6 +238,7 @@ class kdtree:
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     g1 = gv.Digraph(comment='Michael Ellerkamp')
     y = Graph()
     tree = kdtree(3)
@@ -253,7 +254,8 @@ if __name__ == '__main__':
     tree.insert([4,0,6])
     tree.insert([7,1,6])
     tree.TraversalViz(y)
-    y.Print(g1)
+    y.Print(g1)    
     g1.render('kdtree-out.svg', view=True)
+    print("Program ran in %s seconds." % (time.time() - start_time))
 
 
