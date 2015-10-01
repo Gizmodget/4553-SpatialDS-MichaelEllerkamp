@@ -1,3 +1,12 @@
+"""
+@author - Michael Ellerkamp
+@date -  09/29/2015
+@description - This program uses pantograph to create graphics in a web browser
+The scene created consists of 3 polygons and 3 points. The goal of the program
+was to create shapes that react the the edges of the screen and other shapes in
+the scene. Behavior consists of collision, motion, and color change. 
+@resources - I found code and methods at http://pythonhelper.com and used some polygon code.
+"""
 """Point and Rectangle classes.
 This code is in the public domain.
 Point  -- point with (x,y) coordinates
@@ -126,6 +135,14 @@ class Point:
         self.direction = direction
 
     def update_position(self, canvas):
+        """driver.update creates a clear rectangle the size of the browser
+        We pass that rectangle to the update position method of our shapes and 
+        call the rectangle canvas. This method reads when a point hits the edge
+        of the canvas and changes the direction of the point in order to prevent
+        the point from going out of  bounds as well as handles the basic movement
+        of the point. Each of the 8 cardinal directions are implemented by 
+        changing the x and/or y coordinate of the point by +/- 1.
+        """
         if self.x <= 0:
             if self.direction == "SW":
                 self.direction = "SE"
@@ -284,6 +301,16 @@ class Polygon:
 
         self.direction = direction
     def update_position(self, canvas):
+        """similar to update_position for the point class, the points of the
+        polygon are saved as tuples thus requiring the use of creating a new 
+        tuple list and sending it back into set_points([(,)])
+        This method uses the canvas rectangle to identify borders and changes
+        the overall direction of the polygon to prevent any part of it from
+        going out of bounds. The direction is bound to the polygon and all
+        points of the polygon receive the same modifications based on the
+        polygon's direction. Updates are done by adding new tuple points to the
+        points list and then sent back into the rectangle as it's new points.
+        """
         pts = []
         for P in self.get_points():
             if P[0] <= 0:
@@ -375,6 +402,7 @@ class Polygon:
 class Driver(pantograph.PantographHandler):
 
     def setup(self):
+        """The intial creation of the shapes and setting their direction"""
         self.poly2 = Polygon([(145, 60),  (201, 69),  (265, 46),  (333, 61),  (352, 99),  (370, 129),  (474, 138),  (474, 178),  (396, 225),  (351, 275),  (376, 312),  (382, 356),  (338, 368),  (287, 302),  (224, 304),  (128, 338),  (110, 316),  (129, 270),  (83, 231),  (65, 51), (83, 163),  (103, 201),  (90, 74), (126, 162)])
         self.poly2.set_direction("E")
         self.poly1 = Polygon([(905, 328),(877, 367),(944, 413),(1004, 384),(1019, 307),(953, 248),(880, 250),(865, 278),(883, 325)])
@@ -387,14 +415,17 @@ class Driver(pantograph.PantographHandler):
         self.p2.set_direction("NW")
         self.p3 = Point(86,163)
         self.p3.set_direction("SE")
+        #a separate list for each different type of shape for collision purposes.
         self.polys = [self.poly1, self.poly2, self.poly3]
         self.points = [self.p1, self.p2, self.p3]
     def drawShapes(self):
+        """The actual visual creation of the shapes"""
         self.draw_polygon(self.poly3.get_points() , color = "#000")
         self.draw_polygon(self.poly2.get_points() , color = "#000")
         self.draw_polygon(self.poly1.get_points() , color = "#000")
         self.draw_rect(0, 0, self.width, self.height, color= "#000")
-
+        """These statements are used to determine if a point is inside any of the
+        3 polygons and if so changes the point's color"""
         if  (self.poly2.point_inside_polygon(self.p1) or self.poly1.point_inside_polygon(self.p1)
          or self.poly3.point_inside_polygon(self.p1)):
             color = "#0F0"
@@ -421,13 +452,20 @@ class Driver(pantograph.PantographHandler):
         pass
 
     def update(self):
+        #creates a rectangle in the shape of the web browser
         self.clear_rect(0, 0, self.width, self.height)
+        #method calls to give movement to our shapes
         self.p1.update_position(self)
         self.p2.update_position(self)
         self.p3.update_position(self)
         self.poly1.update_position(self)
         self.poly2.update_position(self)
         self.poly3.update_position(self)
+        """iterates between all shapes in a list to check for collision
+        for points the formula for distance between 2 points was used.
+        Points having radius 7 making any distances less than 14 a collision
+        Polygons used a minimum bounding rectangle and the overlaps method call
+        to determine collision. """
         for (a, b) in itertools.combinations(self.points, 2):
             if a.distance_to(b) < 14:
                 directtmp = a.direction
