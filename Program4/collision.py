@@ -5,7 +5,7 @@
 We also paint the quad tree the records are stored in onto the page
 We then use the quad tree to detect collision among our records
 If a collision occurs(between balls), we must then increase the size of the records
-and change their color. 
+and change their color.
 @resources - I found code and methods at http://pythonhelper.com and used some polygon code.
 """
 import math
@@ -308,9 +308,9 @@ class Driver(pantograph.PantographHandler):
     def setup(self):
         self.bounds = Bounds(0,0,self.width,self.height)
         self.rockSpeeds = np.arange(1,15,1)
-        self.numRocks = 3
+        self.numRocks = 45
         self.qt = PointQuadTree(BoundingBox(Point(0,0),Point(self.width,self.height)),1)
-        self.rockSize = 20
+        self.rockSize = 5
         self.halfSize = self.rockSize / 2
         self.rocks = []
         self.boxes = []
@@ -329,30 +329,31 @@ class Driver(pantograph.PantographHandler):
         self.drawRocks()
         self.drawBoxes();
         #time.sleep(.5)
-"""
-@function checkCollisions 
+    """
+    @function checkCollisions
 
-Function description: check collisions creates a bounding box around a record.
-then searching for all other records that overlap the passed record's bounding box.
-Checks to see if the center of any of those found records are within a certain distance of the 
-passed record(r). if they are a distance less than the total of both radii then the swap
-x path, y path, and velocity. The records also increase in size and change color(among 3 colors)
-there is a safety check to prevent any 2 records from getting trapped in each other.
+    Function description: check collisions creates a bounding box around a record.
+    then searching for all other records that overlap the passed record's bounding box.
+    Checks to see if the center of any of those found records are within a certain distance of the
+    passed record(r). if they are a distance less than the total of both radii then the swap
+    x path, y path, and velocity. The records also increase in size and change color(among 3 colors)
+    there is a safety check to prevent any 2 records from getting trapped in each other.
 
-Found help at http://pythonsnippet.org/blah/blah and used a polygon distance function
+    Found help at http://pythonsnippet.org/blah/blah and used a polygon distance function
 
-@param  bbox - canvas bounding box
-@param  rock - the rock we are focusing on in the neighbor search
-@returns{void}   - no returns
-"""
+    @param  bbox - canvas bounding box
+    @param  rock - the rock we are focusing on in the neighbor search
+    @returns{void}   - no returns
+    """
+
     def checkCollisions(self,r):
         box = BoundingBox(Point(r.center.x-self.halfSize,r.center.y-self.halfSize),Point(r.center.x+self.halfSize,r.center.y+self.halfSize))
         boxes  = self.qt.searchBox(box)
         boxes.sort(key=lambda tup: tup[1],reverse=True)
         for stuff in boxes:
-            neighbors = self.qt.searchNeighbors(r)            
+            neighbors = self.qt.searchNeighbors(r)
             for neih in neighbors:
-                if(sqrt(pow((neih.x-r.x),2) + pow((neih.y-r.y),2)) <= (neih.radius+r.radius)):            
+                if(sqrt(pow((neih.x-r.x),2) + pow((neih.y-r.y),2)) <= (neih.radius+r.radius)):
 #                    print neih
                 #swapping x vector, y vector, and velocity
                     placeholdx = r.vectorOps.dx
@@ -370,11 +371,13 @@ Found help at http://pythonsnippet.org/blah/blah and used a polygon distance fun
                     while(sqrt(pow((neih.x-r.x),2) + pow((neih.y-r.y),2)) <= (neih.radius+r.radius+2)):
                         r.x += r.vectorOps.dx
                         r.y += r.vectorOps.dy
+                        neih.x += neih.vectorOps.dx
+                        neih.y += neih.vectorOps.dy
                 #node growth
                     neih.radius += 1
                     r.radius += 1
                 #color changes for the nodes
-                   if(neih.color == "#F00"):
+                    if(neih.color == "#F00"):
                         neih.color = "#0FF"
                     elif(neih.color == "#0FF"):
                         neih.color = "#0F0"
