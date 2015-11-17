@@ -1,0 +1,12 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+G=nx.read_shp('dallas_texas_osm_roads.shp')
+
+nodes =  G.nodes()
+edges = G.edges()
+
+print nodes[0]
+print nodes[-1]
+
+print edges[0]
