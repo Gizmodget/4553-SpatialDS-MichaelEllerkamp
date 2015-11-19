@@ -20,13 +20,11 @@ with open('edges.csv', 'rb') as csvfile:
 f = open('nodegeometry.json','r')
 for line in f:
     line = json.loads(line)
-    geometry[line['id']] = line['geometry']
-#geometry keeps reading as a string so using geo to convert it back to ints
-geo = json.loads(geometry[str(203982)])
+    geometry[line['id']] = json.loads(line['geometry'])
 
 print "Michael Ellerkamp"
 print "Program 5 - Part 1"
 print "nodes.csv read containing " + str(len(nodes))
 print "edges.csv read containing " + str(len(edges))
-print "Nodes 203982 contains " + str(len(geo)) + " points. The geometry follows:"
+print "Nodes 203982 contains " + str(len(geometry[str(203982)])) + " points. The geometry follows:"
 print geometry[str(203982)]
