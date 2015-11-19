@@ -7,6 +7,7 @@ import json
 nodes = []
 edges = []
 geometry = {}
+#obtains all nodes and edges from their respective files
 with open('nodes.csv', 'rb') as csvfile:
     rows = csv.reader(csvfile, delimiter = ',', quotechar = '|')
     for row in rows:
@@ -15,11 +16,14 @@ with open('edges.csv', 'rb') as csvfile:
     rows = csv.reader(csvfile, delimiter = ',', quotechar = '|')
     for row in rows:
         edges.append(row)
+#accessing json and creating dictionary of id-geometry
 f = open('nodegeometry.json','r')
 for line in f:
     line = json.loads(line)
     geometry[line['id']] = line['geometry']
+#geometry keeps reading as a string so using geo to convert it back to ints
 geo = json.loads(geometry[str(203982)])
+
 print "Michael Ellerkamp"
 print "Program 5 - Part 1"
 print "nodes.csv read containing " + str(len(nodes))
