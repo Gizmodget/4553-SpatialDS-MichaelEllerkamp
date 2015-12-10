@@ -1,3 +1,10 @@
+'''
+Michael Ellerkamp
+CMPS 4553 Spatial DS
+Dr. Simpson
+Final Project lab: convert a binary tree into a 2D-Tree
+using code provided by instructor.
+'''
 import random
 
 class TreeNode:
