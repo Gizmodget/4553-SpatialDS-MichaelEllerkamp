@@ -5,7 +5,7 @@ Program 5 - Part 1
 import csv
 import json
 import random
-''' Ignore this!!!!
+
 def find_path(graph, start, end, path=[]):
     path = path + [start]
     if start == end:
@@ -17,7 +17,7 @@ def find_path(graph, start, end, path=[]):
             newpath = find_path(graph, node, end, path)
             if newpath: return newpath
     return None
-'''
+
 nodes = []
 edges = []
 geometry = {}
@@ -44,7 +44,7 @@ print "edges.csv read containing " + str(len(edges))
 print "Nodes 203982 contains " + str(len(geometry[str(203982)])) + " points. The geometry follows:"
 print geometry[str(203982)]
 
-''' ignore this!!!!
+
 for e in edges:
     A,B = e
     if A in graph:
@@ -63,4 +63,3 @@ while(boo):
     if(find_path(graph,start,end) != None):
         boo = False
         print iterated
-'''
